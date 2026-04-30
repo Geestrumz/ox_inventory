@@ -69,7 +69,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 // Gradient border mixin (Uiverse.io technique: two backgrounds, padding-box + border-box)
-@mixin gradient-border($radius: 12px, $rotation: 70deg) {
+@mixin gradient-border($radius: 12px) {
   border-radius: $radius;
   border: 1px solid transparent;
   background-image:
@@ -413,7 +413,8 @@ button:active {
 }
 
 .inventory-slot-number {
-  background: linear-gradient(135deg, $accentPurple, $accentPink);
+  background-color: $accentPurple; // fallback for browsers without gradient support
+  background-image: linear-gradient(135deg, $accentPurple, $accentPink);
   color: white;
   height: 12px;
   border-top-left-radius: 0.25vh;
