@@ -1,11 +1,23 @@
-$mainColor: #22232c;
-$textColor: #c1c2c5;
+// Uiverse.io-inspired dark purple/pink theme
+$mainColor: #0d0d10;
+$textColor: #c0b9c0;
 $mainFont: Roboto;
 
-$secondaryColor: rgba(12, 12, 12, 0.4);
-$secondaryColorHighlight: #33343F;
-$secondaryColorLight: rgba(0, 0, 0, 0.5);
-$secondaryColorDark: rgba(12, 12, 12, 0.8);
+$accentPurple: #402fb5;
+$accentPink: #cf30aa;
+$darkBorder: #1c191c;
+$glowPurple: rgba(64, 47, 181, 0.3);
+$glowPink: rgba(207, 48, 170, 0.15);
+
+$secondaryColor: rgba(10, 8, 20, 0.65);
+$secondaryColorHighlight: rgba(64, 47, 181, 0.2);
+$secondaryColorLight: rgba(24, 17, 106, 0.2);
+$secondaryColorDark: rgba(8, 6, 18, 0.9);
+
+// Gradient border helpers (adapted from Uiverse.io by Lakshay-art)
+$_borderStop1: $darkBorder;
+$_borderStop2: $accentPurple;
+$_borderStop3: $accentPink;
 
 $gridCols: 5;
 $gridRows: 5;
@@ -56,18 +68,55 @@ input[type='number']::-webkit-outer-spin-button {
   color: white;
 }
 
+// Gradient border mixin (Uiverse.io technique: two backgrounds, padding-box + border-box)
+@mixin gradient-border($radius: 12px, $rotation: 70deg) {
+  border-radius: $radius;
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient($mainColor, $mainColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  transition: background-image 2s, box-shadow 0.3s;
+
+  &:hover {
+    background-image:
+      linear-gradient($mainColor, $mainColor),
+      conic-gradient(from 180deg, $_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+    box-shadow: 0 0 25px $glowPurple, 0 0 50px $glowPink;
+  }
+}
+
+@mixin gradient-border-dark($radius: 12px) {
+  border-radius: $radius;
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient($secondaryColor, $secondaryColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  transition: background-image 2s, box-shadow 0.3s;
+
+  &:hover {
+    background-image:
+      linear-gradient($secondaryColorDark, $secondaryColorDark),
+      conic-gradient(from 180deg, $_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+    box-shadow: 0 0 15px $glowPurple, 0 0 25px $glowPink;
+  }
+}
+
 .context-menu-list {
   min-width: 200px;
-  background-color: $mainColor;
+  @include gradient-border(8px);
+  background-image:
+    linear-gradient($mainColor, $mainColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
   color: $textColor;
   padding: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
-  border-radius: 4px;
   outline: none;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 0 20px $glowPurple;
 }
 
 .context-menu-item  {
@@ -123,6 +172,12 @@ button:active {
   height: 100%;
 
   gap: 20px;
+  // Uiverse.io grid overlay
+  background-image:
+    linear-gradient(to right, rgba(15, 15, 16, 0.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 15, 16, 0.55) 1px, transparent 1px);
+  background-size: 1rem 1rem;
+  background-position: center center;
 }
 
 .inventory-control {
@@ -131,47 +186,65 @@ button:active {
   .inventory-control-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     justify-content: center;
     align-items: center;
   }
 
   .inventory-control-input {
-    transition: 200ms;
-    padding: 16px 8px;
-    border-radius: 2.5%;
     font-family: $mainFont;
     font-size: 16px;
     text-align: center;
     outline: none;
-    border: none;
     color: #fff;
-    background-color: $secondaryColor;
+    width: 120px;
+    padding: 12px 8px;
+    @include gradient-border(10px);
+    background-image:
+      linear-gradient($mainColor, $mainColor),
+      conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+
+    &::placeholder {
+      color: $textColor;
+    }
+
     &:focus-within {
-      background-color: $secondaryColorDark;
+      background-image:
+        linear-gradient($mainColor, $mainColor),
+        conic-gradient(from 442deg, $_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+      box-shadow: 0 0 15px $glowPurple, 0 0 30px $glowPink;
+      transition: all 4s;
     }
   }
 
   .inventory-control-button {
     font-size: 14px;
     color: #fff;
-    background-color: $secondaryColor;
-    transition: 200ms;
+    @include gradient-border-dark(10px);
+    background-image:
+      linear-gradient($secondaryColor, $secondaryColor),
+      conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
     padding: 12px 8px;
-    border-radius: 2.5%;
-    border: none;
     text-transform: uppercase;
     font-family: $mainFont;
     width: 100%;
     font-weight: 500;
+    cursor: pointer;
+
     &:hover {
-      background-color: $secondaryColorDark;
+      background-image:
+        linear-gradient($secondaryColorDark, $secondaryColorDark),
+        conic-gradient(from 180deg, $_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+      box-shadow: 0 0 15px $glowPurple, 0 0 25px $glowPink;
     }
   }
 }
 
 .useful-controls-dialog {
-  background-color: $mainColor;
+  @include gradient-border(12px);
+  background-image:
+    linear-gradient($mainColor, $mainColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -181,12 +254,12 @@ button:active {
   display: flex;
   flex-direction: column;
   padding: 16px;
-  border-radius: 4px;
   gap: 16px;
+  box-shadow: 0 0 30px $glowPurple, 0 0 60px $glowPink;
 }
 
 .useful-controls-dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .useful-controls-dialog-title {
@@ -221,15 +294,15 @@ button:active {
 .divider {
   width: 100%;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(90deg, transparent, $accentPurple, $accentPink, transparent);
+  opacity: 0.5;
 }
 
 .useful-controls-button {
   position: absolute !important;
   bottom: 25px;
   right: 25px;
-  transition: 200ms !important;
-  border: none;
+  transition: all 2s !important;
   color: white;
   width: 52px;
   height: 52px;
@@ -237,10 +310,20 @@ button:active {
   justify-content: center;
   align-items: center;
   fill: white;
-  border-radius: 5% !important;
-  background-color: $secondaryColor !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  background-image:
+    linear-gradient($secondaryColor, $secondaryColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%) !important;
+  background-clip: padding-box, border-box !important;
+  background-origin: padding-box, border-box !important;
+  cursor: pointer;
+
   &:hover {
-    background-color: $secondaryColorDark !important;
+    background-image:
+      linear-gradient($secondaryColorDark, $secondaryColorDark),
+      conic-gradient(from 180deg, $_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%) !important;
+    box-shadow: 0 0 15px $glowPurple !important;
     cursor: pointer;
   }
 }
@@ -249,18 +332,25 @@ button:active {
   position: absolute !important;
   right: 8px;
   top: 8px;
-  border-radius: 2.5% !important;
+  border-radius: 4px !important;
   color: grey !important;
 }
-
-// Dialog is used fro useful controls window
-
 
 // inventory grids
 .inventory-grid-wrapper {
   display: flex;
   flex-direction: column;
   gap: calc($gridGap * 2);
+  padding: 12px;
+  @include gradient-border(12px);
+  background-image:
+    linear-gradient($mainColor, $mainColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
+  box-shadow: 0 0 20px $glowPurple, inset 0 0 1px rgba(64, 47, 181, 0.4);
+
+  &:hover {
+    box-shadow: 0 0 30px $glowPurple, 0 0 60px $glowPink, inset 0 0 1px rgba(64, 47, 181, 0.4);
+  }
 }
 .inventory-grid-header-wrapper {
   display: flex;
@@ -268,6 +358,9 @@ button:active {
   justify-content: space-between;
   p {
     font-size: 16px;
+    color: $textColor;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 8px $glowPurple;
   }
 }
 
@@ -285,25 +378,27 @@ button:active {
   background-color: $secondaryColor;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 2.5%;
+  border-radius: 8px;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
   background-size: 7vh;
   color: $textColor;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  border: 1px solid rgba(64, 47, 181, 0.2);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: rgba(64, 47, 181, 0.5);
+    box-shadow: 0 0 10px rgba(64, 47, 181, 0.2), 0 0 4px rgba(207, 48, 170, 0.1);
+  }
 }
 
 .inventory-slot-label-box {
-  background-color: $mainColor;
+  background-color: rgba(5, 4, 14, 0.85);
   color: $textColor;
   text-align: center;
   border-bottom-left-radius: 0.25vh;
   border-bottom-right-radius: 0.25vh;
-  border-top-color: rgba(0, 0, 0, 0.2);
-  border-top-style: inset;
-  border-top-width: 1px;
+  border-top: 1px solid rgba(64, 47, 181, 0.2);
 }
 
 .inventory-slot-label-text {
@@ -318,8 +413,8 @@ button:active {
 }
 
 .inventory-slot-number {
-  background-color: white;
-  color: black;
+  background: linear-gradient(135deg, $accentPurple, $accentPink);
+  color: white;
   height: 12px;
   border-top-left-radius: 0.25vh;
   border-bottom-right-radius: 0.25vh;
@@ -387,17 +482,17 @@ button:active {
 .tooltip-wrapper {
   pointer-events: none;
   display: flex;
-  background-color: $mainColor;
+  @include gradient-border(10px);
+  background-image:
+    linear-gradient($mainColor, $mainColor),
+    conic-gradient($_borderStop1, $_borderStop2 5%, $_borderStop1 14%, $_borderStop1 50%, $_borderStop3 60%, $_borderStop1 64%);
   width: 200px;
   padding: 8px;
   flex-direction: column;
   min-width: 200px;
   color: $textColor;
   font-family: $mainFont;
-  border-radius: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  box-shadow: 0 0 20px $glowPurple, 0 0 40px $glowPink;
   p {
     font-size: 12px;
     font-weight: 400;
@@ -511,7 +606,7 @@ button:active {
 
 .weight-bar {
   background: rgba(0, 0, 0, 0.4);
-  border: 1px inset rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(64, 47, 181, 0.2);
   height: 0.8vh;
   border-radius: 5%;
   overflow: hidden;
